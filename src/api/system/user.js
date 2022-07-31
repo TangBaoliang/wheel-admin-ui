@@ -2,11 +2,25 @@ import request from '@/utils/request'
 import { parseStrEmpty } from "@/utils/ruoyi";
 
 // 查询用户列表
-export function listUser(query) {
+export function listUser(page) {
   return request({
-    url: '/system/user/list',
-    method: 'get',
-    params: query
+    url: '/sysUser/pageUsers',
+    method: 'post',
+    data: page
+  })
+}
+export function deleteUser(param) {
+  return request({
+    url: '/sysUser/deleteUser',
+    method: 'delete',
+    params: param
+  })
+}
+export function updateUser(data) {
+  return request({
+    url: '/sysUser/editUser',
+    method: 'put',
+    data:data,
   })
 }
 
@@ -21,20 +35,20 @@ export function getUser(userId) {
 // 新增用户
 export function addUser(data) {
   return request({
-    url: '/system/user',
+    url: '/sysUser/createUser',
     method: 'post',
     data: data
   })
 }
 
-// 修改用户
-export function updateUser(data) {
-  return request({
-    url: '/system/user',
-    method: 'put',
-    data: data
-  })
-}
+// // 修改用户
+// export function updateUser(data) {
+//   return request({
+//     url: '/system/user',
+//     method: 'put',
+//     data: data
+//   })
+// }
 
 // 删除用户
 export function delUser(userId) {

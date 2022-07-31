@@ -34,6 +34,7 @@ const permission = {
       return new Promise(resolve => {
         // 向后端请求路由数据
         getRouters().then(res => {
+
           const sdata = JSON.parse(JSON.stringify(res.data))
           const rdata = JSON.parse(JSON.stringify(res.data))
           const sidebarRoutes = filterAsyncRouter(sdata)
@@ -55,6 +56,7 @@ const permission = {
 // 遍历后台传来的路由字符串，转换为组件对象
 function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
   return asyncRouterMap.filter(route => {
+
     if (type && route.children) {
       route.children = filterChildren(route.children)
     }
@@ -108,15 +110,15 @@ function filterChildren(childrenMap, lastRouter = false) {
 export function filterDynamicRoutes(routes) {
   const res = []
   routes.forEach(route => {
-    if (route.permissions) {
-      if (auth.hasPermiOr(route.permissions)) {
+    // if (route.permissions) {
+    //   if (auth.hasPermiOr(route.permissions)) {
         res.push(route)
-      }
-    } else if (route.roles) {
-      if (auth.hasRoleOr(route.roles)) {
-        res.push(route)
-      }
-    }
+  //     }
+  //   } else if (route.roles) {
+  //     if (auth.hasRoleOr(route.roles)) {
+  //       res.push(route)
+  //     }
+  //   }
   })
   return res
 }

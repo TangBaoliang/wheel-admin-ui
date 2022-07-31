@@ -1,5 +1,6 @@
 import request from '@/utils/request'
-
+import qs from "qs"
+import { setToken } from '@/utils/auth'
 // 登录方法
 export function login(username, password, code, uuid) {
   const data = {
@@ -8,13 +9,15 @@ export function login(username, password, code, uuid) {
     code,
     uuid
   }
+
   return request({
     url: '/login',
     headers: {
-      isToken: false
+      isToken: false,
+      'Content-Type':'application/x-www-form-urlencoded'
     },
     method: 'post',
-    data: data
+    data: qs.stringify(data),
   })
 }
 
@@ -33,7 +36,7 @@ export function register(data) {
 // 获取用户详细信息
 export function getInfo() {
   return request({
-    url: '/getInfo',
+    url: '/sysUser/userInfo',
     method: 'get'
   })
 }

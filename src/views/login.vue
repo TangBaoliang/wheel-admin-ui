@@ -37,7 +37,7 @@
           <img :src="codeUrl" @click="getCode" class="login-code-img"/>
         </div>
       </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+<!--      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>-->
       <el-form-item style="width:100%;">
         <el-button
           :loading="loading"
@@ -103,8 +103,8 @@ export default {
     }
   },
   created() {
-    this.getCode();
-    this.getCookie();
+    // this.getCode();
+    // this.getCookie();
   },
   methods: {
     getCode() {
@@ -130,16 +130,17 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
-          if (this.loginForm.rememberMe) {
-            Cookies.set("username", this.loginForm.username, { expires: 30 });
-            Cookies.set("password", encrypt(this.loginForm.password), { expires: 30 });
-            Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
-          } else {
-            Cookies.remove("username");
-            Cookies.remove("password");
-            Cookies.remove('rememberMe');
-          }
+          // if (this.loginForm.rememberMe) {
+          //   Cookies.set("username", this.loginForm.username, { expires: 30 });
+          //   Cookies.set("password", encrypt(this.loginForm.password), { expires: 30 });
+          //   Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
+          // } else {
+          //   Cookies.remove("username");
+          //   Cookies.remove("password");
+          //   Cookies.remove('rememberMe');
+          // }
           this.$store.dispatch("Login", this.loginForm).then(() => {
+            console.log(this.redirect)
             this.$router.push({ path: this.redirect || "/" }).catch(()=>{});
           }).catch(() => {
             this.loading = false;
