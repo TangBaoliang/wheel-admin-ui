@@ -9,64 +9,82 @@
     <el-table
       :data="tableData"
       style="width: 100%">
-      <el-table-column type="selection" width="50" align="center" />
-      <el-table-column label="account" align="center" key="account" prop="account" />
-      <el-table-column label="用户名" align="center" key="userName" prop="userName" :show-overflow-tooltip="true" />
-      <el-table-column label="最后一次登录" align="center" prop="lastLoginTime" width="160">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.lastLoginTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="是否启用" align="center" key="enabled" prop="enabled" :show-overflow-tooltip="true" >
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.enabled"
-            @change="updateUserStatus(scope.$index, 'enabled')">
-          </el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column label="未过期" align="center" key="notExpired" prop="notExpired" width="120">
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.notExpired"
-            @change="updateUserStatus(scope.$index, 'notExpired')">
-          </el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column label="凭证未过期" align="center" key="credentialsNotExpired" prop="credentialsNotExpired">
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.credentialsNotExpired"
-            @change="updateUserStatus(scope.$index, 'credentialsNotExpired')">
-          </el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="160">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="更新时间" align="center" prop="updateTime" width="160">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.updateTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column  fixed="right" width="200" label="操作">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            @click="">编辑</el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="deleteUser({userId:scope.row.id})">删除</el-button>
-        </template>
-      </el-table-column>
+      <el-form class="inline-form" :rules="rules">
+
+        <el-table-column label="account" align="center" key="account" prop="account" />
+        <el-table-column label="用户名" align="center" width="150" key="userName"  prop="userName" :show-overflow-tooltip="true" >
+          <template slot-scope="scope">
+              <el-input :disabled="curEditRow !== scope.$index" style="width:100%" v-model="tableData[scope.$index].userName" autocomplete="off"></el-input>
+          </template>
+        </el-table-column>
+
+        <el-table-column v-show="curEditRow !== -1" label="密码" align="center" prop="password" width="160">
+          <template slot-scope="scope">
+            <el-input placeholder="提交空值不修改" :disabled="curEditRow !== scope.$index" show-password style="width:100%" v-model="tableData[scope.$index].password" autocomplete="off"></el-input>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="最后一次登录" align="center" prop="lastLoginTime" width="160">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.lastLoginTime) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="是否启用" align="center" key="enabled" prop="enabled" :show-overflow-tooltip="true" >
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.enabled"
+              @change="updateUserStatus(scope.$index, 'enabled')">
+            </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="未过期" align="center" key="notExpired" prop="notExpired" width="120">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.notExpired"
+              @change="updateUserStatus(scope.$index, 'notExpired')">
+            </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="凭证未过期" align="center" key="credentialsNotExpired" prop="credentialsNotExpired">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.credentialsNotExpired"
+              @change="updateUserStatus(scope.$index, 'credentialsNotExpired')">
+            </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" align="center" prop="createTime" width="160">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.createTime) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="更新时间" align="center" prop="updateTime" width="160">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.updateTime) }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column  fixed="right" width="200" label="操作">
+          <template slot-scope="scope">
+            <el-button v-if="curEditRow !== scope.$index"
+              size="mini"
+              @click="curEditRow = scope.$index">编辑</el-button>
+            <el-button v-else
+                       size="mini"
+                       @click="updateUserStatus(scope.$index)" type="success">提交</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="deleteUser({userId:scope.row.id})">删除</el-button>
+          </template>
+        </el-table-column>
+
+      </el-form>
     </el-table>
 
-    <el-dialog close-on-press-escape="false" close-on-click-modal="false" title="新增用户" :visible.sync="dialogFormVisible" width="700">
+    <el-dialog :close-on-press-escape="false" :close-on-click-modal="false" title="新增用户" :visible.sync="dialogFormVisible" width="700">
       <el-form :model="addForm" :rules="rules" ref="addForm">
-        <el-form-item label="账户名(用于登录)" prop="account">
+        <el-form-item label="账户名(用于登录)" prop="account" >
           <el-input v-model="addForm.account" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="用户名" prop="userName">
@@ -103,6 +121,7 @@ export default {
       }
     };
     return {
+      curEditRow:-1,
       tableData: [],
       queryParam:{
         current:1,
@@ -147,6 +166,9 @@ export default {
           Message({message:"获取数据失败", type:"error", duration:2000});
         }
         else {
+          for (let item of res.data['records']) {
+            item['password'] = '';
+          }
           this.tableData = res.data['records'];
         }
       }).catch(err => {
@@ -166,9 +188,19 @@ export default {
         Message({message:err, type:"error", duration:2000});
       })
     },
-    updateUserStatus(index, prop) {
-      this.tableData[index][prop] = !this.tableData[index][prop];
+    updateUserStatus(index) {
+      if (this.tableData[index].userName === undefined || this.tableData[index].userName.length === 0 || this.tableData[index].userName.length > 32) {
+        Message({message:"用户名不能为空且长度在 1 到 32之间", type:"error", duration:4000});
+        return;
+      }
+      if (this.tableData[index].password) {
+        if (this.tableData[index].password.length < 6 || this.tableData[index].password.length > 64) {
+          Message({message:"密码长度在 1 到 32之间，为空不修改", type:"error", duration:4000});
+          return;
+        }
+      }
       this.updateUser(this.tableData[index]);
+      this.curEditRow = -1;
     },
 
     updateUser(data) {
@@ -211,3 +243,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.el-table-column>>>input{
+  width: 400px;
+}
+</style>

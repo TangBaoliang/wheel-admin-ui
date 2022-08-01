@@ -10,12 +10,37 @@ export function listRole(query) {
 }
 
 // 查询角色详细
-export function getRole(roleId) {
+export function getRoleById(params) {
   return request({
-    url: '/system/role/' + roleId,
-    method: 'get'
+    url: '/sysRole/listUserRole',
+    method: 'get',
+    params:params
   })
 }
+// 绑定角色
+export function bindRole(params) {
+  return request({
+    url: '/sysRole/bindRoles',
+    method: 'post',
+    params:params
+  })
+}
+// 解绑角色
+export function unBindRole(params) {
+  return request({
+    url: '/sysRole/unBindRoles',
+    method: 'post',
+    params:params
+  })
+}
+
+export function getAllRoles() {
+  return request({
+    url: '/sysRole/list',
+    method: 'get',
+  })
+}
+
 
 // 新增角色
 export function addRole(data) {
