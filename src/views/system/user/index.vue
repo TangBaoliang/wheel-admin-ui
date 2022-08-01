@@ -3,7 +3,7 @@
     <el-button size="small" type="primary" @click="dialogFormVisible = true">+添加用户</el-button>
     <el-table
       :data="tableData"
-      style="width: 100%">
+      max-height="650">
 
         <el-table-column label="account" align="center" key="account" prop="account" />
         <el-table-column label="用户名" align="center" width="150" key="userName"  prop="userName" :show-overflow-tooltip="true" >
