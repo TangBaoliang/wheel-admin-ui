@@ -1,11 +1,12 @@
 import request from '@/utils/request'
-
+import qs from 'qs'
 // 查询操作日志列表
-export function list(query) {
+export function sysLogList(page, query) {
   return request({
-    url: '/monitor/operlog/list',
-    method: 'get',
-    params: query
+    url: '/sysLog/pageSysLogs',
+    method: 'post',
+    params: query,
+    data:page
   })
 }
 

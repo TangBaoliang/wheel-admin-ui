@@ -1,15 +1,9 @@
 <template>
   <div style="padding-left: 10px" >
-    <!-- Form -->
-<!--    <el-button type="text" @click="dialogFormVisible = true">打开嵌套表单的 Dialog</el-button>-->
-
-
-
     <el-button size="small" type="primary" @click="dialogFormVisible = true">+添加用户</el-button>
     <el-table
       :data="tableData"
       style="width: 100%">
-      <el-form class="inline-form" :rules="rules">
 
         <el-table-column label="account" align="center" key="account" prop="account" />
         <el-table-column label="用户名" align="center" width="150" key="userName"  prop="userName" :show-overflow-tooltip="true" >
@@ -78,9 +72,15 @@
               @click="deleteUser({userId:scope.row.id})">删除</el-button>
           </template>
         </el-table-column>
-
-      </el-form>
     </el-table>
+    <el-pagination style="position: fixed; bottom: 0"
+      @current-change="getData"
+      background
+      :page-size="queryParam.size"
+      :current-page.sync="queryParam.current"
+      layout="prev, pager, next"
+      :total="total">
+    </el-pagination>
 
     <el-dialog :close-on-press-escape="false" :close-on-click-modal="false" title="新增用户" :visible.sync="dialogFormVisible" width="700">
       <el-form :model="addForm" :rules="rules" ref="addForm">
@@ -123,6 +123,7 @@ export default {
     return {
       curEditRow:-1,
       tableData: [],
+      total:0,
       queryParam:{
         current:1,
         size:10
@@ -166,6 +167,7 @@ export default {
           Message({message:"获取数据失败", type:"error", duration:2000});
         }
         else {
+          this.total = Number(res.data['total']);
           for (let item of res.data['records']) {
             item['password'] = '';
           }

@@ -19,6 +19,14 @@
 
       </el-form>
     </el-table>
+    <el-pagination style="position: fixed; bottom: 0"
+                   @current-change="getData"
+                   background
+                   :page-size="queryParam.size"
+                   :current-page.sync="queryParam.current"
+                   layout="prev, pager, next"
+                   :total="total">
+    </el-pagination>
 
     <el-dialog :close-on-click-modal="false" width="700px" title="角色绑定和解绑" :visible.sync="dialogTableVisible">
       <h1>用户名：{{userName}} 账户：{{userAccount}}</h1>
@@ -52,6 +60,7 @@ export default {
         current:1,
         size:10
       },
+      total:0,
       dialogTableVisible:false,
       hadRoles: {},
       allRoles:[],
@@ -69,9 +78,10 @@ export default {
       // debugger
       listUser(this.queryParam).then(res => {
         if (!res['success']) {
-          Message({message:"获取数据失败", type:"error", duration:2000});
+          Message({message:res['errorMsg'], type:"error", duration:2000});
         }
         else {
+          this.total = Number(res.data['total']);
           for (let item of res.data['records']) {
             item['password'] = '';
           }
